@@ -1,0 +1,6 @@
+requests
+matplotlib
+tqdm
+json
+os
+pprint
