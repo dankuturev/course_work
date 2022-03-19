@@ -1,6 +1,5 @@
 from pprint import pprint
 import requests
-import os
 from tqdm import tqdm, tqdm_gui, trange
 import json
 
@@ -27,7 +26,6 @@ class VkApi:
             'count': 5
         }
         res = requests.get(get_photos_url, params={**self.params, **params}).json()['response']['items']
-        pprint('Ссылки на фото получены')
         return res
 
 
@@ -35,12 +33,14 @@ def get_content_file_json():
     res = vk_user.get_photos(input('Введите ID пользователя ВК: '))
     content_list = []
     file_list = []
-    for i in range(len(res)):
-        photo_content = {'file_name': str(res[i]['likes']['count']) + '.jpg', 'size': res[i]['sizes'][-1]['type'],
-                         'url': res[i]['sizes'][-1]['url']}
+    for i in res:
+        photo_content = {'file_name': str(i['likes']['count']) + f'''({str(i['date'])})''' + '.jpg',
+                         'size': i['sizes'][-1]['type'],
+                         'url': i['sizes'][-1]['url']}
         content_list.append(photo_content)
-    for k in range(len(res)):
-        file_content = {'file_name': str(res[k]['likes']['count']) + '.jpg', 'size': res[k]['sizes'][-1]['type']}
+    for k in res:
+        file_content = {'file_name': str(k['likes']['count']) + f'''({str(k['date'])})''' + '.jpg',
+                        'size': k['sizes'][-1]['type']}
         file_list.append(file_content)
     with open('content_file.json', 'w') as f:
         json.dump(file_list, f, ensure_ascii=False, indent=2)
